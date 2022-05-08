@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="1" failures="1" time="6.903">
+  <testsuite name="undefined" errors="0" failures="1" skipped="0" timestamp="2021-04-29T07:36:40" time="5.068" tests="1">
+    <testcase classname=" initial dummy test" name=" initial dummy test" time="0.135">
+      <failure>TestingLibraryElementError: Unable to find an element by: [data-testid=&quot;input&quot;]
+
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div&gt;
+      Welcome to Scout24 test
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+    at Object.getElementError (/Users/nbozic/Desktop/58c3657f68265f36a7e1e0b2ff69fdd7/node_modules/@testing-library/dom/dist/config.js:37:19)
+    at /Users/nbozic/Desktop/58c3657f68265f36a7e1e0b2ff69fdd7/node_modules/@testing-library/dom/dist/query-helpers.js:92:38
+    at /Users/nbozic/Desktop/58c3657f68265f36a7e1e0b2ff69fdd7/node_modules/@testing-library/dom/dist/query-helpers.js:64:17
+    at getByTestId (/Users/nbozic/Desktop/58c3657f68265f36a7e1e0b2ff69fdd7/node_modules/@testing-library/dom/dist/query-helpers.js:108:19)
+    at Object.&lt;anonymous&gt; (/Users/nbozic/Desktop/58c3657f68265f36a7e1e0b2ff69fdd7/src/App.test.js:16:9)
+    at Object.asyncJestTest (/Users/nbozic/Desktop/58c3657f68265f36a7e1e0b2ff69fdd7/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:102:37)
+    at /Users/nbozic/Desktop/58c3657f68265f36a7e1e0b2ff69fdd7/node_modules/jest-jasmine2/build/queueRunner.js:43:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (/Users/nbozic/Desktop/58c3657f68265f36a7e1e0b2ff69fdd7/node_modules/jest-jasmine2/build/queueRunner.js:26:19)
+    at /Users/nbozic/Desktop/58c3657f68265f36a7e1e0b2ff69fdd7/node_modules/jest-jasmine2/build/queueRunner.js:73:41
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
