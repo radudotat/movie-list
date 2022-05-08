@@ -1,66 +1,124 @@
-import React from 'react';
 import './App.css';
 import 'h8k-components';
-import { useEffect, useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-
-const title = "Movie List";
+const title = 'Movie List';
 const apiEndpoint = 'https://jsonmock.hackerrank.com/api/movies';
 
 function App() {
+  let [currentPage, setCurrentPage] = useState(1);
+  let [movies, setMovies] = useState([]);
   const [apiQuery, setApiQuery] = useState('');
-
-  const onChange = useCallback((event) => {
-    const query = event.target.value;
-    console.log(query);
-    if (query.length > 0) {
-      setApiQuery(query);
-    }
-  }, []);
+  const [toggleVisibility, setToggleVisibility] = useState('none');
+  const resultsRef = useRef();
 
   const getApiData = async () => {
-    await fetch(apiEndpoint, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(result => {
-        (async () => {
-          const stream = await result.body.getReader();
+    // console.log('getApiData', apiQuery);
+    await fetch(
+      apiEndpoint +
+        '?' +
+        new URLSearchParams({
+          Year: apiQuery,
+          page: currentPage,
+        }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        // clone previous state for movies
+        const previousMovies = [...movies];
+        // filter results by year
+        const moviesFiltred = response.data.filter((item) => {
+          return item.Year === apiQuery;
+        });
 
-          while (true) {
-            const { data, endOfStream } = await stream.read();
+        // Toggle visibilite when there are no results
+        if (moviesFiltred.length === 0) {
+          setToggleVisibility('block');
+        }
+        // Hide "No results" after 3s
+        setTimeout(() => {
+          setToggleVisibility('none');
+        }, 3000);
 
-            if (endOfStream) {
-              break;
-            }
-            console.log(data);
-
-          }
-        })();
+        // prepend list of movies
+        setMovies([...moviesFiltred, ...previousMovies]);
+        // increase page number
+        setCurrentPage(currentPage + 1);
       })
-      .catch((error) => {
-        console.error(error.message)
-      });
-  }
+      .catch((error) => console.error);
+  };
+
+  const onChange = useCallback(
+    (event) => {
+      const query = event.target.value;
+      // console.log(query);
+
+      if (query !== apiQuery) {
+        // reset to default states
+        setCurrentPage(1);
+        setMovies([]);
+      }
+
+      if (query.length > 0) {
+        // cast input value to integer
+        setApiQuery(parseInt(query));
+      } else {
+        setApiQuery('');
+      }
+    },
+    [apiQuery],
+  );
+
+  const onSearch = () => {
+    // console.log('onSearch', apiQuery);
+    // ignore number with a length smaller then 4 digits
+    if (apiQuery <= 1000 || apiQuery > 9999) {
+      return;
+    }
+
+    getApiData();
+  };
 
   useEffect(() => {
     document.title = title;
   });
 
-  useEffect(() => {
-    getApiData().then(result => {
-      console.log(result);
-    });
-
-
-  }, [apiQuery]);
-
   return (
     <div>
-      <input onChange={onChange}
-        type="number"
-        value={apiQuery} />
+      <h8k-navbar header={title} />
+      <div className="layout-column align-items-center mt-50">
+        <div className="layout-row align-items-center">
+          <input
+            className="w-50"
+            onChange={onChange}
+            type="number"
+            value={apiQuery}
+            placeholder="Enter Year eg 1995"
+            min="1000"
+          />
+          <button onClick={onSearch} className="small">
+            Search
+          </button>
+        </div>
+        {movies && (
+          <div ref={resultsRef} className={`${toggleVisibility} mt-50`}>
+            No Results Found
+          </div>
+        )}
+
+        {movies && movies.length > 0 && (
+          <ul className="styled">
+            {movies.map((movie) => (
+              <li key={`movie-${movie.imdbID}`}>{movie.Title}</li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
